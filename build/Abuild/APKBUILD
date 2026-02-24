@@ -1,0 +1,56 @@
+# Alpine-Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
+# Alpine-Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
+# Maitainer: Aaron Bassett <abassett@blackberry.com
+pkgname=freetype
+pkgver=2.14.1
+pkgrel=1
+# upgrading needs to rebuild py3-matplotlib and update its _ftver
+pkgdesc="TrueType font rendering library"
+url="https://www.freetype.org/"
+arch="all"
+license="FTL OR GPL-2.0-or-later"
+options="!check"
+depends_dev="pkgconf brotli-dev bzip2-dev libpng-dev"
+makedepends="meson ninja pkgconf-dev $depends_dev"
+depends="
+    brotli
+    libbz2
+    libpng
+    zlib-ng
+    "
+subpackages="
+    $pkgname-static
+    $pkgname-dev
+    "
+source="
+    https://download.savannah.gnu.org/releases/freetype/freetype-$pkgver.tar.xz
+    pcf-family-names.patch
+    subpixel.patch
+    table-validation-modules.patch
+    "
+
+build() {
+    meson setup build \
+        -Dtests=enabled \
+        -Dmmap=enabled \
+        -Ddefault_library=both \
+        --reconfigure \
+        --buildtype=release \
+        --prefix=/usr \
+        
+    ninja -C build
+
+}
+
+package() {
+    DESTDIR="$pkgdir" ninja -C "$builddir"/build install
+    install -Dm644 builds/unix/freetype2.m4 \
+        -t "$pkgdir"/usr/share/aclocal
+}
+
+sha512sums="
+28284da99be52e90c7883fd668131cd44227ce68b98a57767fc33b2fe73e4baa5425cba4144bf3094192946d2abec03cec7afefe6300c0cda6787fae91966bad  freetype-2.14.1.tar.xz
+78ad6b1de388d3986fd5a51a7076b0a9d782733e85f400fc8c070b40e5e48130a562a67a7a9b251169b74ae052f571ea8e6b0f9435c271520d93dd72c1845d59  pcf-family-names.patch
+206a0e79c7ed2596e271f317e80e0c29ab30ea89c34c4ec576e7c3d54424413e8e6793987fa8291f19b017632f46ac06c0faf484e28d34373e35970479577cba  subpixel.patch
+580fe59acddfd41966e387bdb6a88336b8bc119cc3d60d8689be20c96fb0dd07c5138ea31f6cb9c854f497ecb41c3adc49eb3ec16a34b2e010e8294851770763  table-validation-modules.patch
+"
