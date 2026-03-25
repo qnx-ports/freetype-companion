@@ -3,7 +3,7 @@
 # Maitainer: Aaron Bassett <abassett@blackberry.com
 pkgname=freetype
 pkgver=2.14.1
-pkgrel=${pkgrel:-0}
+pkgrel=1
 # upgrading needs to rebuild py3-matplotlib and update its _ftver
 pkgdesc="TrueType font rendering library"
 url="https://www.freetype.org/"
@@ -48,7 +48,6 @@ package() {
         -t "$pkgdir"/usr/share/aclocal
 }
 
-options="$options ${DISABLE_CHECK:+!check}"
 sha512sums="
 28284da99be52e90c7883fd668131cd44227ce68b98a57767fc33b2fe73e4baa5425cba4144bf3094192946d2abec03cec7afefe6300c0cda6787fae91966bad  freetype-2.14.1.tar.xz
 78ad6b1de388d3986fd5a51a7076b0a9d782733e85f400fc8c070b40e5e48130a562a67a7a9b251169b74ae052f571ea8e6b0f9435c271520d93dd72c1845d59  pcf-family-names.patch
